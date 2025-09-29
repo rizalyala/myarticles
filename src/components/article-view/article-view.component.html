@@ -1,0 +1,54 @@
+@if (article(); as currentArticle) {
+  <div class="max-w-4xl mx-auto">
+    <button (click)="onBack()" class="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200 font-semibold">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+      </svg>
+      Kembali ke Daftar Artikel
+    </button>
+
+    <article class="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-md">
+      <header>
+        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full mb-4">{{ currentArticle.categoryDisplay }}</span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">{{ currentArticle.title }}</h1>
+        <div class="flex items-center text-sm text-gray-500 space-x-4 mb-6">
+          <span>Oleh: <span class="font-medium text-gray-700">{{ currentArticle.author }}</span></span>
+          <span>{{ currentArticle.publicationDate }}</span>
+        </div>
+      </header>
+      
+      <img class="w-full h-64 sm:h-80 md:h-96 object-cover rounded-lg mb-8" [src]="currentArticle.imageUrl" [alt]="currentArticle.title">
+
+      <div class="prose prose-lg text-gray-700 leading-relaxed space-y-4">
+        <h2 class="text-2xl font-bold text-gray-800 !mb-4 !mt-8 border-b pb-2">Pendahuluan</h2>
+        @for(paragraph of currentArticle.content.pendahuluan; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+
+        <h2 class="text-2xl font-bold text-gray-800 !mb-4 !mt-8 border-b pb-2">Metodologi</h2>
+        @for(paragraph of currentArticle.content.metodologi; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+
+        <h2 class="text-2xl font-bold text-gray-800 !mb-4 !mt-8 border-b pb-2">Hasil dan Pembahasan</h2>
+        @for(paragraph of currentArticle.content.hasilDanPembahasan; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+
+        <h2 class="text-2xl font-bold text-gray-800 !mb-4 !mt-8 border-b pb-2">Kesimpulan</h2>
+        @for(paragraph of currentArticle.content.kesimpulan; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </div>
+
+      <footer class="mt-10 border-t pt-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Sumber Referensi</h3>
+        <ul class="list-disc list-inside space-y-1">
+          @for (source of currentArticle.sources; track $index) {
+            <li class="text-sm text-gray-600 italic">{{ source }}</li>
+          }
+        </ul>
+      </footer>
+    </article>
+  </div>
+}
