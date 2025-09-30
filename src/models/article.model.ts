@@ -1,21 +1,13 @@
 export type ArticleCategory = 'ekonomi' | 'kesehatan' | 'teknologi';
 
-export interface ArticleContent {
-  pendahuluan: string[];
-  metodologi: string[];
-  hasilDanPembahasan: string[];
-  kesimpulan: string[];
-}
-
 export interface Article {
-  id: number;
+  id: string;
   title: string;
   category: ArticleCategory;
   categoryDisplay: string;
   summary: string;
-  content: ArticleContent;
+  content: string; // Changed from ArticleContent to string
   author: string;
   publicationDate: string;
-  sources: string[];
   imageUrl: string;
 }

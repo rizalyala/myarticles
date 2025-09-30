@@ -1,3 +1,4 @@
+
 import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { Article } from '../../models/article.model';

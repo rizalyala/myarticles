@@ -1,20 +1,21 @@
 <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
   @for (article of articles(); track article.id) {
-    <div 
+    <button
+      type="button"
       (click)="selectArticle(article)"
-      class="bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col">
-      <img class="h-48 w-full object-cover" [src]="article.imageUrl" [alt]="article.title">
+      class="bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col text-left">
+      <img class="h-48 w-full object-cover" [ngSrc]="article.imageUrl" [alt]="article.title" width="400" height="240" priority>
       <div class="p-6 flex-grow flex flex-col">
         <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full mb-2 self-start">{{ article.categoryDisplay }}</span>
         <h2 class="text-xl font-bold text-gray-800 mb-2 flex-grow">{{ article.title }}</h2>
         <p class="text-gray-600 text-sm mb-4">{{ article.summary }}</p>
         <div class="mt-auto">
           <p class="text-xs text-gray-500">{{ article.author }} &bull; {{ article.publicationDate }}</p>
-          <button class="mt-4 w-full text-center text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-200">
+          <div class="mt-4 w-full text-center text-blue-600 font-semibold group-hover:text-blue-800 transition-colors duration-200">
             Baca Selengkapnya &rarr;
-          </button>
+          </div>
         </div>
       </div>
-    </div>
+    </button>
   }
 </div>

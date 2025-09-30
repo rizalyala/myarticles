@@ -1,3 +1,4 @@
+
 import { Component, ChangeDetectionStrategy, signal, computed, inject, effect } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Article } from '../../models/article.model';
@@ -16,9 +17,9 @@ import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skelet
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  private articleService = inject(ArticleService);
-  private categoryService = inject(CategoryService);
-  private titleService = inject(Title);
+  private articleService: ArticleService = inject(ArticleService);
+  private categoryService: CategoryService = inject(CategoryService);
+  private titleService: Title = inject(Title);
 
   articles = this.articleService.articles;
   loading = this.articleService.loading;
@@ -28,8 +29,6 @@ export class HomeComponent {
   selectedArticle = signal<Article | null>(null);
   searchQuery = signal<string>('');
   isSearchVisible = signal<boolean>(false);
-
-  hasContent = computed(() => this.articles().length > 0);
 
   constructor() {
     effect(() => {

@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ArticleCategory } from '../../models/article.model';
 import { CategoryService } from '../../services/category.service';
-import { ArticleService } from '../../services/article.service';
 
 interface Category {
   id: ArticleCategory | 'semua';
@@ -17,19 +17,18 @@ interface Category {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  private categoryService = inject(CategoryService);
-  private articleService = inject(ArticleService);
-  private router = inject(Router);
+  private categoryService: CategoryService = inject(CategoryService);
+  // FIX: Explicitly type the injected Router to resolve a type inference issue where it was being inferred as 'unknown'.
+  private router: Router = inject(Router);
   
   selectedCategory = this.categoryService.selectedCategory;
 
-  categories = computed(() => {
-    const dynamicCategories = this.articleService.uniqueCategories();
-    return [
-      { id: 'semua', name: 'Semua' },
-      ...dynamicCategories
-    ];
-  });
+  categories: Category[] = [
+    { id: 'semua', name: 'Semua' },
+    { id: 'ekonomi', name: 'Ekonomi' },
+    { id: 'kesehatan', name: 'Kesehatan' },
+    { id: 'teknologi', name: 'Teknologi' },
+  ];
 
   onSelectCategory(category: ArticleCategory | 'semua') {
     this.categoryService.selectCategory(category);
