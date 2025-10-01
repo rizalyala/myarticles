@@ -1,11 +1,10 @@
 import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
 import { Article } from '../../models/article.model';
 
 @Component({
   selector: 'app-article-view',
   standalone: true,
-  imports: [NgOptimizedImage],
+  imports: [],
   templateUrl: './article-view.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

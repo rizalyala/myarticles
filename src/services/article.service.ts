@@ -1,8 +1,9 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, of } from 'rxjs';
+import { catchError, of, switchMap, from } from 'rxjs';
 import { Article, ArticleCategory } from '../models/article.model';
 import { environment } from '../environments/environment';
+import { GoogleGenAI } from '@google/genai';
 
 // Interface for the raw Blogger API response
 interface BloggerApiResponse {
@@ -25,6 +26,7 @@ interface BloggerPost {
 })
 export class ArticleService {
   private http = inject(HttpClient);
+  private ai: GoogleGenAI | null = null;
 
   private state = signal<{ articles: Article[]; loading: boolean; error: string | null }>({
     articles: [],
@@ -45,6 +47,16 @@ export class ArticleService {
   });
 
   constructor() {
+    // Only initialize Gemini if a valid, non-placeholder API key is provided.
+    if (environment.apiKey && environment.apiKey !== 'YOUR_API_KEY' && environment.apiKey !== 'AIzaSyAxDgGG70pxMFVFiJGDlfu2u3puztDPZD0') {
+      try {
+        this.ai = new GoogleGenAI({ apiKey: environment.apiKey });
+      } catch (e) {
+        console.error("Error initializing GoogleGenAI, please check your API key.", e);
+      }
+    } else {
+        console.warn("Gemini API key is not configured or is a placeholder. Image generation will use fallbacks.");
+    }
     this.loadArticles();
   }
 
@@ -56,7 +68,14 @@ export class ArticleService {
     const url = `https://www.googleapis.com/blogger/v3/blogs/${blogId}/posts?key=${apiKey}&fetchImages=true&maxResults=20`;
 
     this.http.get<BloggerApiResponse>(url).pipe(
-      map(response => (response.items || []).map(post => this.transformBloggerPostToArticle(post))),
+      switchMap(response => {
+        const posts = response.items || [];
+        if (posts.length === 0) {
+            return of([]);
+        }
+        const articlePromises = posts.map(post => this.transformBloggerPostToArticle(post));
+        return from(Promise.all(articlePromises));
+      }),
       catchError(err => {
         console.error('Error fetching articles from Blogger:', err);
         // Provide a more specific error message if the blog might be private
@@ -66,19 +85,40 @@ export class ArticleService {
         return of({ error: 'Tidak dapat memuat artikel. Silakan periksa koneksi internet Anda dan coba lagi nanti.' });
       })
     ).subscribe(result => {
-      if ('error' in result) {
+      if (result && 'error' in result && typeof result.error === 'string') {
         this.state.set({ articles: [], loading: false, error: result.error });
-      } else {
+      } else if (Array.isArray(result)) {
         this.state.set({ articles: result, loading: false, error: null });
       }
     });
   }
   
-  private transformBloggerPostToArticle(post: BloggerPost): Article {
+  private async transformBloggerPostToArticle(post: BloggerPost): Promise<Article> {
     const category = (post.labels?.[0]?.toLowerCase().trim() as ArticleCategory) || 'teknologi';
     const categoryDisplay = post.labels?.[0]?.trim() || 'Teknologi';
 
-    const imageUrl = this.extractFirstImageUrl(post.content) || `https://picsum.photos/800/600?query=${category}`;
+    let imageUrl = this.extractFirstImageUrl(post.content);
+    
+    if (!imageUrl && this.ai) {
+        try {
+            const result = await this.ai.models.generateImages({
+                model: 'imagen-3.0-generate-002',
+                prompt: `Ilustrasi sinematik yang menarik untuk artikel berita berjudul "${post.title}". Tema utama adalah ${categoryDisplay}. Gaya: fotografi profesional, warna cerah, dan estetika modern.`,
+                config: {
+                    numberOfImages: 1,
+                    outputMimeType: 'image/jpeg',
+                    aspectRatio: '16:9',
+                },
+            });
+            const base64ImageBytes = result.generatedImages[0].image.imageBytes;
+            imageUrl = `data:image/jpeg;base64,${base64ImageBytes}`;
+        } catch(e) {
+            console.error(`Error generating image for "${post.title}":`, e);
+            imageUrl = `https://picsum.photos/800/450?query=${category}`; // fallback
+        }
+    } else if (!imageUrl) {
+        imageUrl = `https://picsum.photos/800/450?query=${category}`;
+    }
     
     // Create a summary by stripping HTML and truncating
     const tempDiv = document.createElement('div');
@@ -100,7 +140,7 @@ export class ArticleService {
       category,
       categoryDisplay,
       summary,
-      imageUrl,
+      imageUrl: imageUrl!,
     };
   }
   
