@@ -54,7 +54,7 @@ export class HomeComponent {
     let articles = this.articles();
 
     if (category !== 'semua') {
-      articles = articles.filter(article => article.category === category);
+      articles = articles.filter(article => article.categoryDisplay === category);
     }
 
     if (query) {

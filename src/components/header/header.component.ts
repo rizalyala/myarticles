@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, computed, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { ArticleCategory } from '../../models/article.model';
 import { CategoryService } from '../../services/category.service';
 import { ArticleService } from '../../services/article.service';
 
@@ -31,7 +30,7 @@ export class HeaderComponent {
     this.isMobileMenuOpen.update(v => !v);
   }
 
-  onSelectCategory(category: ArticleCategory | 'semua') {
+  onSelectCategory(category: string) {
     this.categoryService.selectCategory(category);
     this.isMobileMenuOpen.set(false);
     // If we are on the about page, clicking a category should take us home.

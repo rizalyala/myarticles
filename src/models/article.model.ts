@@ -1,4 +1,4 @@
-export type ArticleCategory = 'ekonomi' | 'kesehatan' | 'teknologi';
+export type ArticleCategory = 'inovasi' | 'budaya' | 'gaya-hidup';
 
 export interface Article {
   id: string;

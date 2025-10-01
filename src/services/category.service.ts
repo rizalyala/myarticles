@@ -1,13 +1,12 @@
 import { Injectable, signal } from '@angular/core';
-import { ArticleCategory } from '../models/article.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
-  readonly selectedCategory = signal<ArticleCategory | 'semua'>('semua');
+  readonly selectedCategory = signal<string>('semua');
 
-  selectCategory(category: ArticleCategory | 'semua') {
+  selectCategory(category: string) {
     this.selectedCategory.set(category);
   }
 }

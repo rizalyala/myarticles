@@ -9,15 +9,15 @@
       </button>
     </div>
 
-    <article class="bg-white p-6 sm:p-8 lg:p-12 rounded-2xl shadow-xl border border-slate-200/80">
+    <article class="bg-white p-4 sm:p-8 lg:p-12 rounded-2xl shadow-xl border border-slate-200/80">
       <header class="mb-8 md:mb-12">
         <div class="text-center mb-6">
           <span class="inline-block bg-indigo-100 text-indigo-700 text-sm font-semibold px-4 py-1.5 rounded-full">{{ currentArticle.categoryDisplay }}</span>
         </div>
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4 text-center tracking-tight leading-tight">{{ currentArticle.title }}</h1>
-        <div class="flex items-center justify-center text-sm text-slate-500 space-x-4 mt-6 border-t border-b border-slate-200 py-4">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 mb-4 text-center tracking-tight leading-tight">{{ currentArticle.title }}</h1>
+        <div class="flex flex-col sm:flex-row items-center justify-center text-sm text-slate-500 space-y-2 sm:space-y-0 sm:space-x-4 mt-6 border-t border-b border-slate-200 py-4">
           <span>Oleh <span class="font-semibold text-slate-700">{{ currentArticle.author }}</span></span>
-          <span class="text-slate-300">&bull;</span>
+          <span class="hidden sm:inline text-slate-300">&bull;</span>
           <span>{{ currentArticle.publicationDate }}</span>
         </div>
       </header>
@@ -26,7 +26,7 @@
         <img class="w-full aspect-video object-cover" [src]="currentArticle.imageUrl" [alt]="currentArticle.title">
       </div>
 
-      <div class="prose prose-lg prose-indigo max-w-none text-slate-800 leading-relaxed" [innerHTML]="currentArticle.content">
+      <div class="prose sm:prose-lg prose-indigo max-w-none text-slate-800 leading-relaxed" [innerHTML]="currentArticle.content">
         <!-- The article content from Blogger will be rendered here -->
       </div>
     </article>

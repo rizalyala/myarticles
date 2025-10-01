@@ -40,7 +40,8 @@ export class ArticleService {
 
   uniqueCategories = computed(() => {
     const articles = this.articles();
-    const categories = articles.map(a => ({ id: a.category, name: a.categoryDisplay }));
+    // Use categoryDisplay for unique filtering in the header, to match API labels
+    const categories = articles.map(a => ({ id: a.categoryDisplay, name: a.categoryDisplay }));
     const unique = [...new Map(categories.map(item => [item.id, item])).values()];
     // FIX: Explicitly type the parameters of the sort function to resolve a type inference issue where they were being inferred as 'unknown'.
     return unique.sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name));
@@ -92,10 +93,33 @@ export class ArticleService {
       }
     });
   }
+
+  private mapLabelToCategory(label?: string): { category: ArticleCategory; categoryDisplay: string } {
+    const trimmedLabel = label?.trim();
+
+    // Default for articles with no label
+    if (!trimmedLabel) {
+      return { category: 'inovasi', categoryDisplay: 'Umum' }; // "General" for uncategorized
+    }
+
+    const lowerLabel = trimmedLabel.toLowerCase();
+    // Capitalize the first letter for display
+    const categoryDisplay = trimmedLabel.charAt(0).toUpperCase() + trimmedLabel.slice(1);
+
+    if (lowerLabel === 'teknologi' || lowerLabel === 'ekonomi') {
+      return { category: 'inovasi', categoryDisplay };
+    }
+    
+    if (lowerLabel === 'kesehatan') {
+      return { category: 'gaya-hidup', categoryDisplay };
+    }
+    
+    // Any other defined label is considered culture
+    return { category: 'budaya', categoryDisplay };
+  }
   
   private async transformBloggerPostToArticle(post: BloggerPost): Promise<Article> {
-    const category = (post.labels?.[0]?.toLowerCase().trim() as ArticleCategory) || 'teknologi';
-    const categoryDisplay = post.labels?.[0]?.trim() || 'Teknologi';
+    const { category, categoryDisplay } = this.mapLabelToCategory(post.labels?.[0]);
 
     let imageUrl = this.extractFirstImageUrl(post.content);
     
