@@ -10,4 +10,6 @@ import { HeaderComponent } from '../components/header/header.component';
   styleUrls: ['./app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {}
+export class AppComponent {
+  readonly currentYear = new Date().getFullYear();
+}

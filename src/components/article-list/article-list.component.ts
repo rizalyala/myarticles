@@ -1,20 +1,17 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Article, ArticleCategory } from '../../models/article.model';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-article-list',
   standalone: true,
   templateUrl: './article-list.component.html',
-  imports: [],
+  imports: [RouterLink, NgOptimizedImage],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArticleListComponent {
   articles = input.required<Article[]>();
-  articleSelected = output<Article>();
-
-  selectArticle(article: Article) {
-    this.articleSelected.emit(article);
-  }
 
   getCategoryClass(category: ArticleCategory): string {
     switch (category) {

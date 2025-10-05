@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-about',
@@ -8,9 +8,9 @@ import { Title } from '@angular/platform-browser';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AboutComponent implements OnInit {
-  private titleService: Title = inject(Title);
+  private seoService = inject(SeoService);
 
   ngOnInit(): void {
-    this.titleService.setTitle('Tentang Kami | Lensa Tenggara');
+    this.seoService.setAboutTags();
   }
 }

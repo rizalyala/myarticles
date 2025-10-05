@@ -161,6 +161,7 @@ export class ArticleService {
         month: 'long',
         year: 'numeric'
       }),
+      publicationDateISO: post.published,
       category,
       categoryDisplay,
       summary,

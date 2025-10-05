@@ -9,5 +9,6 @@ export interface Article {
   content: string; // Changed from ArticleContent to string
   author: string;
   publicationDate: string;
+  publicationDateISO: string;
   imageUrl: string;
 }

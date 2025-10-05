@@ -1,12 +1,12 @@
 @if (article(); as currentArticle) {
   <div class="max-w-4xl mx-auto animate-fade-in">
     <div class="mb-8">
-      <button (click)="onBack()" class="group inline-flex items-center text-slate-600 hover:text-indigo-600 transition-colors duration-300 font-semibold text-sm bg-white hover:bg-slate-50 border border-slate-200/80 px-4 py-2 rounded-lg shadow-sm">
+      <a routerLink="/" class="group inline-flex items-center text-slate-600 hover:text-indigo-600 transition-colors duration-300 font-semibold text-sm bg-white hover:bg-slate-50 border border-slate-200/80 px-4 py-2 rounded-lg shadow-sm">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transform group-hover:-translate-x-1 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
         </svg>
         Kembali ke Daftar Artikel
-      </button>
+      </a>
     </div>
 
     <article class="bg-white p-4 sm:p-8 lg:p-12 rounded-2xl shadow-xl border border-slate-200/80">
@@ -22,13 +22,49 @@
         </div>
       </header>
       
-      <div class="mb-8 md:mb-12 overflow-hidden rounded-xl shadow-lg">
-        <img class="w-full aspect-video object-cover" [src]="currentArticle.imageUrl" [alt]="currentArticle.title">
+      <div class="relative aspect-video mb-8 md:mb-12 overflow-hidden rounded-xl shadow-lg">
+        <img [ngSrc]="currentArticle.imageUrl" [alt]="currentArticle.title" fill priority class="w-full object-cover">
       </div>
 
       <div class="prose sm:prose-lg prose-indigo max-w-none text-slate-800 leading-relaxed" [innerHTML]="currentArticle.content">
         <!-- The article content from Blogger will be rendered here -->
       </div>
+      
+      <!-- Disclaimer -->
+      <footer class="mt-12 pt-8 border-t border-slate-200">
+        <p class="text-sm text-slate-500 italic text-center">
+          Pandangan yang diungkapkan dalam artikel ini adalah milik penulis dan tidak selalu mencerminkan pandangan Lensa Tenggara.
+        </p>
+      </footer>
     </article>
+
+    <!-- Related Articles Section -->
+    @if (relatedArticles().length > 0) {
+      <div class="mt-16 pt-12 border-t border-slate-200">
+        <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center sm:text-left">Baca Juga</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (related of relatedArticles(); track related.id) {
+            <a
+              [routerLink]="['/artikel', related.id]"
+              class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col text-left border border-slate-200/80 overflow-hidden transform hover:-translate-y-1">
+              
+              <div class="relative h-40 overflow-hidden">
+                <img [ngSrc]="related.imageUrl" [alt]="related.title" fill class="w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
+              </div>
+        
+              <div class="p-5 flex-grow flex flex-col">
+                 <span [class]="'inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 self-start ' + getCategoryClass(related.category)">
+                  {{ related.categoryDisplay }}
+                </span>
+                <h3 class="text-lg font-bold text-slate-900 flex-grow group-hover:text-indigo-600 transition-colors duration-300 leading-tight">
+                  {{ related.title }}
+                </h3>
+              </div>
+            </a>
+          }
+        </div>
+      </div>
+    }
+
   </div>
 }
